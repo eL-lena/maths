@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITS Model</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div>Logo Here | ITS MODEL</div>
+            <nav>
+                <a href="/" style="color: #FFFFFF; text-decoration: none;">Home</a>
+                <a href="/contact" style="color: #FFFFFF; text-decoration: none;">Contact</a>
+            </nav>
+            <div class="toggle-wrapper" onclick="toggleTheme()">
+                <div class="toggle-circle"></div>
+            </div>
+        </div>
+    </header>
+    <div class="container" id="main-container">
+        <h1>Year 6</h1>
+        <p>Select a subject area:</p>
+        <div class="grid-container">
+            <a href="#" class="grid-item" onclick="showTopic('Number')">Number</a>
+            <a href="#" class="grid-item" onclick="showTopic('Ratio and proportion')">Ratio and proportion</a>
+            <a href="#" class="grid-item" onclick="showTopic('Geometry')">Geometry</a>
+            <a href="#" class="grid-item" onclick="showTopic('Algebra')">Algebra</a>
+            <a href="#" class="grid-item" onclick="showTopic('Measurment')">Measurement</a>
+            <a href="#" class="grid-item" onclick="showTopic('Statistics')">Statistics</a>
+            <a href="#" class="grid-item" onclick="showTopic('All')">All</a>
+        </div>
+        <div id="question-box" style="margin-top: 60px;"></div>
+    </div>
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const container = document.getElementById('main-container');
+            const toggleWrapper = document.querySelector('.toggle-wrapper');
+
+            if (body.style.backgroundColor === 'rgb(30, 41, 59)') {
+                body.style.backgroundColor = '#FFF4E5';
+                body.style.color = '#333333';
+                container.style.backgroundColor = '#FFEDD5';
+                container.style.color = '#333333';
+                toggleWrapper.classList.add('active');
+            } else {
+                body.style.backgroundColor = '#1E293B';
+                body.style.color = '#FFFFFF';
+                container.style.backgroundColor = '#14B8A6';
+                container.style.color = '#000000';
+                toggleWrapper.classList.remove('active');
+            }
+        }
+
+       
+        function showTopic(topic) {
+    // when a topic is selected, reset the streak and difficulty
+    streak = 0;
+    difficulty = "easy";
+    loadQuestion(topic);
+}
+
+        let difficulty = "easy";
+let streak = 0;
+let wrongAttempts = 0;
+
+function loadQuestion(topic) {
+    let url = `/get_question?year=6&difficulty=${difficulty}`;
+
+    // Only add topic if not 'All'
+    if (topic !== 'All') {
+        url += `&topic=${topic}`;
+    }
+
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+        const container = document.getElementById("question-box");
+
+        if (!data || !data.question) {
+            container.innerHTML = `<p style="color: red;">❌ No questions found.</p>`;
+        } else {
+            container.innerHTML = `
+                <div class="question-card">
+                    <h3>Topic: ${topic === 'All' ? 'Any' : topic}</h3>
+                    <p><strong>Question:</strong> ${data.question}</p>
+                    <input type="text" id="userAnswer" placeholder="Your answer">
+                    <button onclick="checkAnswer('${data.answer}', '${topic}')">Submit</button>
+                    <p id="result"></p>
+                </div>
+            `;
+
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+}
+
+
+function checkAnswer(correct, topic) {
+  const userAnswer = document.getElementById("userAnswer").value.trim().toLowerCase();
+  const result = document.getElementById("result") || document.createElement("p");
+  result.id = "result";
+
+  if (userAnswer === correct.toLowerCase()) {
+    result.innerText = "Correct!";
+    streak++;
+    if (streak >= 2 && difficulty === "easy") difficulty = "medium";
+    else if (streak >= 2 && difficulty === "medium") difficulty = "hard";
+  } else {
+    result.innerText = ` Incorrect. Correct answer was: ${correct}`;
+    streak = Math.max(0, streak - 1);
+    if (streak === 0 && difficulty === "hard") difficulty = "medium";
+    else if (streak === 0 && difficulty === "medium") difficulty = "easy";
+  }
+
+  document.getElementById("topic-content").appendChild(result);
+  setTimeout(() => loadQuestion(topic), 2000);
+}
+    </script>
+</body>
+</html>

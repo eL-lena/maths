@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You | ITS Model</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div>Logo Here | ITS MODEL</div>
+      <nav>
+        <a href="/" style="color: #FFFFFF; text-decoration: none;">Home</a>
+        <a href="/contact" style="color: #FFFFFF; text-decoration: none;">Contact</a>
+      </nav>
+      <div class="toggle-wrapper" onclick="toggleTheme()">
+        <div class="toggle-circle"></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container" id="main-container" style="text-align: center; padding: 60px 20px;">
+    <h1>🎉 Thank You!</h1>
+    <p>Your message has been sent successfully.</p>
+    <p>We’ll get back to you as soon as possible.</p>
+    <br>
+    <a href="/" class="button">Back to Home</a>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const container = document.getElementById('main-container');
+      const toggleWrapper = document.querySelector('.toggle-wrapper');
+
+      if (body.style.backgroundColor === 'rgb(30, 41, 59)') {
+          body.style.backgroundColor = '#FFF4E5';
+          body.style.color = '#333333';
+          container.style.backgroundColor = '#FFEDD5';
+          container.style.color = '#333333';
+          toggleWrapper.classList.add('active');
+      } else {
+          body.style.backgroundColor = '#1E293B';
+          body.style.color = '#FFFFFF';
+          container.style.backgroundColor = '#14B8A6';
+          container.style.color = '#000000';
+          toggleWrapper.classList.remove('active');
+      }
+    }
+  </script>
+</body>
+</html>
